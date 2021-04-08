@@ -1,6 +1,7 @@
 const express = require("express");
 const logger = require("morgan");
 const mongoose = require("mongoose");
+const path = require("path");
 
 const PORT = process.env.PORT || 3000;
 
@@ -17,6 +18,7 @@ app.use(express.static("public"));
 
 mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/workout", { useNewUrlParser: true });
 
+//api routes
 app.get("/api/workouts", (req, res) => {
     db.Workout.find({})
     .then(dbWorkout => {
@@ -30,7 +32,7 @@ app.get("/api/workouts", (req, res) => {
 app.put("/api/workouts/:id", (req, res) => {
     db.Workout.update(
         {
-        _id: mongojs.ObjectId(req.params.id)
+        _id: mongoose.ObjectId(req.params.id)
     },
     {
         $set: {
@@ -56,7 +58,7 @@ app.post("/api/workouts", (req, res) => {
     });
 });
 
-app.get(`/api/workouts/range`, (req, res) => {
+app.get('/api/workouts/range', (req, res) => {
     db.Workout.find({})
     .then(dbWorkout => {
         res.json(dbWorkout);
@@ -66,7 +68,13 @@ app.get(`/api/workouts/range`, (req, res) => {
     });
 });
 
+//html routes
+app.get('/exercise', (req, res) => {
+    res.sendFile(path.join(__dirname, './public/exercise.html'))
+});
+
+
 app.listen(PORT, () => {
     console.log(`App running on port ${PORT}!`);
   });
-  
+   
