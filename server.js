@@ -20,52 +20,66 @@ mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/workout", { use
 
 //api routes
 app.get("/api/workouts", (req, res) => {
-    db.Workout.find({})
-    .then(dbWorkout => {
-      res.json(dbWorkout);
-    })
-    .catch(err => {
-      res.json(err);
-    });
+    db.Workout.aggregate([
+        {
+            $addFields: {
+                totalDuration: {
+                    $sum: '$exercises.duration'
+                }
+            }
+        }
+    ])
+        .then(dbWorkout => {
+            res.json(dbWorkout);
+        })
+        .catch(err => {
+            res.json(err);
+        });
 });
 
 app.put("/api/workouts/:id", (req, res) => {
-    db.Workout.update(
+    db.Workout.findByIdAndUpdate(req.params.id,
         {
-        _id: mongoose.ObjectId(req.params.id)
-    },
-    {
-        $set: {
-            body: req.body
-        }
-    })
-    .then(dbWorkout => {
-      res.json(dbWorkout);
-    })
-    .catch(err => {
-      res.json(err);
-    });
-
+            $push: {
+                exercises: req.body
+            }
+        })
+        .then(dbWorkout => {
+            res.json(dbWorkout);
+        })
+        .catch(err => {
+            res.json(err);
+        });
 });
 
 app.post("/api/workouts", (req, res) => {
+    console.log(req.body);
     db.Workout.create(req.body)
-    .then(dbWorkout => {
-        res.json(dbWorkout);
-    })
-    .catch(err => {
-        res.json(err);
-    });
+        .then(dbWorkout => {
+            console.log(dbWorkout);
+            res.json(dbWorkout);
+        })
+        .catch(err => {
+            res.json(err);
+        });
 });
 
 app.get('/api/workouts/range', (req, res) => {
-    db.Workout.find({})
-    .then(dbWorkout => {
-        res.json(dbWorkout);
-    })
-    .catch(err => {
-        res.json(err);
-    });
+    db.Workout.aggregate([
+        {
+            $addFields: {
+                totalDuration: {
+                    $sum: '$exercises.duration'
+                }
+            }
+        }
+    ])
+        .then(dbWorkout => {
+            res.json(dbWorkout);
+        })
+        .catch(err => {
+            res.json(err);
+        });
 });
 
 //html routes
@@ -73,8 +87,11 @@ app.get('/exercise', (req, res) => {
     res.sendFile(path.join(__dirname, './public/exercise.html'))
 });
 
+app.get('/stats', (req, res) => {
+    res.sendFile(path.join(__dirname, './public/stats.html'))
+});
+
 
 app.listen(PORT, () => {
     console.log(`App running on port ${PORT}!`);
-  });
-   
+});
