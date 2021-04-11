@@ -19,6 +19,7 @@ module.exports = (app) => {
 
         ])
             .then(dbWorkout => {
+                dbWorkout.reverse();
                 res.json(dbWorkout);
             })
             .catch(err => {
@@ -70,6 +71,7 @@ module.exports = (app) => {
             }
         ])
             .then(dbWorkout => {
+                dbWorkout.reverse();
                 res.json(dbWorkout);
             })
             .catch(err => {
