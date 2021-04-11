@@ -41,4 +41,4 @@ Morgan
 
 ## Deployment
 
-The app is deployed on Heroku at: <a href="https://evening-peak-04669.herokuapp.com/stats">https://evening-peak-04669.herokuapp.com/stats</a>
+The app is deployed on Heroku at: <a href="https://evening-peak-04669.herokuapp.com/">https://evening-peak-04669.herokuapp.com</a>
